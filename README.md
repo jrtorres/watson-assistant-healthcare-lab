@@ -1,155 +1,325 @@
-<h1 align="center" style="border-bottom: none;">🚀 Watson Assistant (formerly Conversation) Sample Application</h1>
-<h3 align="center">This Node.js app demonstrates the Watson Assistant service in a simple interface engaging in a series of simple simulated banking tasks.</h3>
+# Introduction to Watson Assistant
+
+## Overview
+
+Watson Assistant service combines machine learning, natural language understanding, and integrated dialog tools to create conversation flows between your apps and your users. In this lab, you will create a workspace and understand the terminology of creating a chatbot.
+
+This application is based on the code pattern published here - https://developer.ibm.com/patterns/assemble-a-pizza-ordering-chatbot-dialog/
+
+### Flow
+
+1. User sends messages to the application (running locally or on IBM Cloud).
+2. The application sends the user message to IBM Watson Assistant service, and displays the ongoing chat in a web page.
+
+   ![](doc/source/images/architecture.png)
+
+### Featured Technologies
+
+* [IBM Watson Assistant](https://www.ibm.com/watson/developercloud/conversation.html): Build, test and deploy a bot or virtual agent across mobile devices, messaging platforms, or even on a physical robot.
+* [Node.js](https://nodejs.org/): An asynchronous event driven JavaScript runtime, designed to build scalable applications.
+
+
+## Part 1: Building a bot from scratch
+
+### Step 1: Designing Your Bot
+
+Building a chatbot with Watson Assistant is so easy, some developers choose to dive right into the tooling. However, with a well-thought out, well-planned chatbot, the interaction with the user can lead to a much better experience that can handle edge cases. In this section, we will design the interaction between a user, Dave, and a chatbot named HungerBot.
+
+A good question to ask yourself is, "Who is my user and what problem do they have?" Expand on the user's profile by determining what the user needs from this chatbot. Does the user have a need to book a reservation at a restaurant? Or an answer to a common question like "Where's the bathroom?" at a conference. Maybe a chatbot that handles tasks like turning on lights or other equipment. It might help to think of the chatbot as an automated version of an existing agent, such as a customer service agent. Look at existing processes that include repeated manual processes, which can sometimes be augmented with chatbots.
+
+Training a chatbot is like training a human agent. You will train the chatbot with the knowledge of certain tasks (intents) and things that these tasks interact with (entities). These components are then combined to create a dialog tree that can take one or more paths to respond to the user's request.
+
+In the following steps, we have provided an insurance chatbot that handles simple questions around plans and claims. 
+
+1. Envision the user that interacts with the bot.
+
+  | Examples                                         |
+  | ----------------------------------------------- |
+  | A user needs to get information about available plans  |
+
+2. Now, let's describe the overall function of the chatbot.
+
+  | Example                                                   |
+  | --------------------------------------------------------- |
+  | The chatbot, helps users with basic plan and claim inquiries. |
+
+3. Let's start with the action the user wants to do, which is referred to as an intent. Frist we write a human-friendly description of the action the user is wanting to perform. Then we list a couple of ways the user might phrase this request. Lastly, add a label, like a variable name in code (alpha-numeric, underscores, etc.), that can be used later as a reference.
+
+  | Intent  | Examples  | Label |
+  | ------- | ------- | ------- |
+  | General plan information  | Tell me about HSA , What plans do you offer ?, What is HIA ?  | #General_Plan_Info |
+  | Contribution information  | Whats the max contribution, How is HSA funded ?  | #Plan_Funding_Contributions  |
+  | Initiate a payment | Pay my premium. |  #Payment  |
+
+
+  If you find that you don't have many variations, invite a colleague, a friend (or a real user!) to suggest how they would ask request the these actions. In the real world, you would use real world customer interactions as a basis for training.
+
+4. Another component to training a chatbot is recognizing objects, which are referred to as entities. This example plan bot can differentiate different types of plans.
+
+  | Entity  | Values  | Label |
+  | ------- |  ------- | ------- | 
+  | Plan Type  | HSA, HIA | Label: @plan | 
+
+  
+ We could add time, number and currency entities, however, there are some built-in system entities provided by IBM, that the bot will use. 
+
+In the Dialog editor of Watson Assistant, we can now setup logic to step the user through the conversation. In the next section, we will use this design to train the Watson Assistant service.
+
+
+### Step 2: Train Watson Assistant Service
+
+Now that we have designed the first dialogue between the chatbot and the user, we can train the Watson Assistant service. Sign up for an IBM Cloud account at https://console.cloud.ibm.com. If you already have an account, sign into your account.
+
+1. **Click on the Catalog*** link in the top-left corner of the IBM Cloud dashboard.
+
+2. **Select the AI category** on the left, under 'All Categories'.
+
+3. **Select the Watson Assistant** service tile.
+
+   ![Assistant Service](doc/source/images/WA_Tile.png)
+
+4. Click **Create** (*Leave default options for Lite plan and service name*)
+
+5. Click on the  **Launch tool** button to launch into the Watson Assistant tooling.
+
+   ![Launch](doc/source/images/WA_LaunchTool.png)
+
+6. This is the Watson Assistant tooling where you can create workspaces and setup different chatbots dialogues and applications. There is an example Customer Service sample workspace where you can see a more evolved training. However, we'll create a new workspace for our bot to use. Click on **Workspaces** and then on  **Create**   in the box labeled **Create a new workspace**.
+
+   ![New workspace](doc/source/images/WA_CreateWS.png)
+
+7. Enter a name for the chatbot and optionally a description, then click **Create**
+
+   ![create](doc/source/images/WA_CreateWS_Complete.png)
+
+8. You will be redirected into a page with four tabs, Intents, Entities, Dialog, and Content Catalog. Before we create our custom intents. Lets make use of some of the content provided by the Watson Assistant Service. Click on the **Content Catalog**
+
+9. The Content Catalog provides some pre-trained intents that you can use in your chatbot. Take a look at the various categories of intents. Click on the **General** category. 
+
+10. There are several common interactions the chatbot can take advantage of from this category. Click on the **Add to workspace** link on the top right corner of the page. You will receive a message that the intent was added to your workspace. Click on the **Arrow** next to the category name 'General'.
+
+   ![Add to Workspace](doc/source/images/WA_ContentCatalog_General.png)
+
+11. Click the **Intents** tab, click on **Add intent** to create the first custom intent.
+
+12. Name the intent *plan_general_information* and click **Create intent**
+
+   ![Create Intent 1](doc/source/images/WA_CreateIntent.png)
+
+13. Add the example utterances shown in the screenshot below, clicking on **Add example** after entering each one 
+
+   ![Intent Examples 1](doc/source/images/WA_CreateIntent_Examples1.png)
+
+14. Click on the return icon to go back to the main menu screen
+
+   ![Return to Intent Page](doc/source/images/WA_CreateIntent_Back.png)
+
+15. Repeat Steps 10 - 13, to create two additional intents as shown below.
+
+   ![Second Intent](doc/source/images/WA_CreateIntent_Examples2.png)
+
+   ![Third Intent](doc/source/images/WA_CreateIntent_Examples3.png)
+
+16. Go ahead and test the chatbot as it is (You will be testing the intent classification). Click on the **Try it** button on the top right of the page. *If there is a purple banner on the Try It Out panel, you will have to wait until training is completed*.  Enter some text in the panel to have Watson Assistant identify the intent.
+
+   ![Intent Test](doc/source/images/WA_IntentTesting.png)
+
+17. Close the 'Try it out' panel by clicking the X on the top right corner. Then Click on the **Entities** tab in the top menu bar. This is where you can add the "objects" that will be extracted from the user input. Click **Add entity**
+
+18. Name the entity *Plan_Type* and add the following values clicking **Add value** after entering each one
+
+   ![Entity Values](doc/source/images/WA_CreateEntity_Example1.png)
+
+19. Click in the return icon to go back to the main menu screen
+
+20. The Watson Assistant has a handful of common entities created by IBM that can be used across any use case. These entities include: date, time, currency, percentage, and numbers. Click on **System entities** and enable @sys-currency, @sys-date, @sys-number and @sys_person
+
+   ![System Entities](doc/source/images/WA_EnableSystemEntities.png)
+
+21. ***[Optional]*** Feel free to test out the entity extraction using the 'Try it out' panel, as you did in step 16.
+
+22. Click on the Dialog tab in the top menu bar. Click **Create**. There are two nodes added by default. The welcome condition is triggered when the chatbot is initially started. This is a good place to introduce the bot and suggest actions the user can ask of this chatbot. Select the Welcome node and change the response as shown below:
+   ![Welcome Response](doc/source/images/WA_Dialog_Welcome.png)
+
+23. The second node checks for the condition anything_else. In the event the user enters something that wasn't expected, the service will return this response. Ideally, it should convey a way for the user to recover, such as example phrases.
+
+   ![Anything else](doc/source/images/WA_Dialog_Anythingelse.png)
+
+24. Lets add a dialog node to handle some of our pre-built intents. Select the Welcome node again and click **Add node**. In the dialog node editor, enter a node name. For the input triggers, have it set to when the intents **#General_Agent_Capabilities** or **#General_Greetings** are identified (ensure the trigger is an OR of the two conditions). In the response, add a text response as shown below.
+
+   ![Dialog Node 1](doc/source/images/WA_Dialog_Node1.png)
+
+25. To handle the general plan information queries, we will add a couple of nodes to the dialog tree. Select the node created above and click **Add node** to create a new node. In the dialog node editor, enter a node name (i.e. 'Plan Information'). For the input triggers, have it set to the intent **#plan_general_information** . There is no need to add any response text.
+
+   ![Dialog Node 2](doc/source/images/WA_Dialog_Node2.png)
+
+26. Select the newly created 'Plan Information' node, then click the **Add child node** button.  In the dialog node editor, enter a node name (i.e. 'Current Plan Responses'). For the input triggers, have it set to the entity type **@Plan_Type** . Then click the **Customize** link next to the name and enable Multipe responses for the node and click the **Apply** button. Complete this node by adding three responses for the three different plans ()
+
+   ![Dialog Node 3](doc/source/images/WA_Dialog_Node3.png)
+
+   ![Dialog Node 3 MR](doc/source/images/WA_Dialog_Node3_MR.png)
+
+   ![Dialog Node 3 Responses](doc/source/images/WA_Dialog_Node3_Responses.png)
+
+27. Select the 'Plan Information' node, then click the **Add child node** button.  In the dialog node editor, enter a node name (i.e. 'Prompt for Plan'). For the input triggers, set it to **true** . Add the responses as shown in the screen shot and in the 'And finally' section, set the action to **Jump to**, selecting the 'Current Plan Response' node and the 'Wait for user input' option
+
+   ![Dialog Node 4](doc/source/images/WA_Dialog_Node4.png)
+
+28. Select the 'Plan Information' node. In the 'And finally' section of the node editor, set the action to **Jump to**, selecting the 'Current Plan Response' node and the 'If bot recognizes (condition)' option
+
+   ![Dialog Node 2 Jump-to](doc/source/images/WA_Dialog_Node2_Jumpto.png)
+
+29. Your dialog tree should now look as shown below. ***[Optional]*** Feel free to test out the dialog using the 'Try it out' panel,
+
+   ![Dialog Plan Information Nodes](doc/source/images/WA_DialogPart1.png)
+
+30. ***[Optional]*** Following a similar process as steps 25 - 29, add dialog nodes to address the plan contribution intent.
+
+   ![Dialog Plan Contribution Nodes](doc/source/images/WA_DialogPart1b.png)
+
+31. We will now add another dialog node to handle payments. We will use the slots feature of Watson Assistant, which will simplify the process of gathering the information necessary for a payment. In the dialog tree, add a node at the root / top level. Name the node *Payment* and select the #payment_request intent as the trigger where it says **If bot recognizes**. Then click on **Customize** in the top right corner and enable Slots. Click **Apply**
+
+   ![Dialog Node 5 Enable Slots](doc/source/images/WA_Dialog_Node5_EnableSlots.png)
+
+32. Add three slots as follows (clicking **Add slot** to add each slot section)
+
+   | Check for  | Save it as  | If not present, ask |
+   | ------- | ------- | ------- |
+   | @sys-date  | $payment_date  | What is the payment date ? |
+   | @sys-currency | $payment_amount  | How much would you like to pay ?  |
+   | @sys-person | $policy_holder_name |  What is the policy holders name ? |
+
+   ![Dialog Node 5 Slots](doc/source/images/WA_Dialog_Node5_Slots.png)
+
+33. Have the bot respond with the details of the payment. The syntax uses the values stored in the context and injects the values into the response. The full text should read:
+`I'll schedule a payment of <? $payment_amount ?> on <? $payment_date ?> for policy holder <? $policy_holder_name ?>`
+
+   ![Dialog Node 5 Response](doc/source/images/WA_Dialog_Node5_Response.png)
+
+34. Use the 'Try it out' panel to test your Watson Assistant chat bot. Click on the **Try it** icon in the top-right corner of the tooling.
+
+   ![Try it out](doc/source/images/WA_DialogPart1_Test.png)
+
+
+## Part 2: Run the Application
+
+### Run in container
+
+Run in a container on IBM Cloud, using [these instructions](doc/source/Container.md).
+
+ **OR**
+
+### Run locally
+ Perform steps 1-5:
+
+1. [Clone the repo](#1-clone-the-repo)
+2. [Configure Watson Assistant](#2-configure-watson-assistant)
+3. [Add IBM Cloud credentials and add to .env](#3-add-ibm-cloud-services-credentials-and-add-to-env-file)
+5. [Run the application](#5-run-the-application)
+
+#### 1. Clone the repo
+
+Clone the `watson-assistant-functions-lab` repository locally. In a terminal, run:
+
+  `$ git clone https://github.com/jrtorres/watson-assistant-functions-lab.git`
+
+
+### 2. Configure Watson Assistant
+
+Complete the steps in Part 1 above to build the chatbot from scratch. As an alternative, you can Launch the **Watson Assistant** tool. Use the `import` icon button on the right
+
 <p align="center">
-  <a href="http://travis-ci.org/watson-developer-cloud/assistant-simple">
-    <img alt="Travis" src="https://travis-ci.org/watson-developer-cloud/assistant-simple.svg?branch=master">
-  </a>
-  <a href="#badge">
-    <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
-  </a>
-</p>
+  <img width="50%" height="50%" src="doc/source/images/import_conversation_workspace.png">
 </p>
 
-![Demo](readme_images/demo.gif)
+Find the local version of [`data/plan-bot-part1.json`](data/plan-bot-part1.json) and select
+`Import`. 
 
-You can view a [demo][demo_url] of this app.
+#### 3. Add IBM Cloud service credentials and Workspace ID to .env file
 
+As you create the IBM Cloud services, you'll need to create service credentials. You might get either IAM or username/password based credentials based on the region.
 
-## Prerequisites
+First of all, copy the `env.example` file to ``.env``.
 
-1. Sign up for an [IBM Cloud account](https://console.bluemix.net/registration/).
-1. Download the [IBM Cloud CLI](https://console.bluemix.net/docs/cli/index.html#overview).
-1. Create an instance of the Watson Assistant service and get your credentials:
-    - Go to the [Watson Assistant](https://console.bluemix.net/catalog/services/conversation) page in the IBM Cloud Catalog.
-    - Log in to your IBM Cloud account.
-    - Click **Create**.
-    - Click **Show** to view the service credentials.
-    - Copy the `apikey` value, or copy the `username` and `password` values if your service instance doesn't provide an `apikey`.
-    - Copy the `url` value.
+* If the service credentials from IBM Watson Assistant is username/password based as below populate the username, password and workspace_id and comment out the IAM credentials part.
 
-## Configuring the application
-
-1. In your IBM Cloud console, open the Watson Assistant service instance
-
-2. Click the **Import workspace** icon in the Watson Assistant service tool. Specify the location of the workspace JSON file in your local copy of the app project:
-
-    `<project_root>/training/bank_simple_workspace.json`
-
-3. Select **Everything (Intents, Entities, and Dialog)** and then click **Import**. The car dashboard workspace is created.
-
-4. Click the menu icon in the upper-right corner of the workspace tile, and then select **View details**.
-
-5. Click the ![Copy](readme_images/copy_icon.png) icon to copy the workspace ID to the clipboard.
-
-    ![Steps to get credentials](readme_images/assistant-simple.gif)
-
-6. In the application folder, copy the *.env.example* file and create a file called *.env*
-
-    ```
-    cp .env.example .env
-    ```
-
-7. Open the *.env* file and add the service credentials that you obtained in the previous step. The Watson SDK automaticaly locates the correct enviromental variables for either `username`, `password`, and `url` or the `apikey` and `url` credentials found in the *.env* file.
-
-    Example *.env* file that configures the `apikey` and `url` for a Watson Assistant service instance hosted in the US East region:
-
-    ```
-    ASSISTANT_IAM_APIKEY=X4rbi8vwZmKpXfowaS3GAsA7vdy17Qh7km5D6EzKLHL2
-    ASSISTANT_URL=https://gateway-wdc.watsonplatform.net/assistant/api
-    ```
-
-    - If your service instance uses `username` and `password` credentials, add the `ASSISTANT_USERNAME` and `ASSISTANT_PASSWORD` variables to the *.env* file.
-
-    Example *.env* file that configures the `username`, `password`, and `url` for a Watson Assistant service instance hosted in the US South region:
-
-    ```
-    ASSISTANT_USERNAME=522be-7b41-ab44-dec3-g1eab2ha73c6
-    ASSISTANT_PASSWORD=A4Z5BdGENrwu8
-    ASSISTANT_URL=https://gateway.watsonplatform.net/assistant/api
-    ```
-    However, if your credentials contain an IAM API key, copy the `apikey` and `url` to the relevant fields.
-    ```JSON
-      {
-        "apikey": "ca2905e6-7b5d-4408-9192-e4d54d83e604",
-        "iam_apikey_description": "Auto generated apikey during resource-key ...",
-        "iam_apikey_name": "auto-generated-apikey-62b71334-3ae3-4609-be26-846fa59ece42",
-        "iam_role_crn": "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-        "iam_serviceid_crn": "crn:v1:bluemix:public:iam...",
-        "url": "https://gateway-syd.watsonplatform.net/assistant/api"
-      }
-    ```
-    ```
-    ASSISTANT_IAM_APIKEY=ca2905e6-7b5d-4408-9192-e4d54d83e604
-    ASSISTANT_IAM_URL=https://gateway-syd.watsonplatform.net/assistant/api
-    ```
-
-8. Add the `WORKSPACE_ID` to the previous properties
-
-    ```
-    WORKSPACE_ID=522be-7b41-ab44-dec3-g1eab2ha73c6
-    ```
-
-## Running locally
-
-1. Install the dependencies
-
-    ```
-    npm install
-    ```
-
-1. Run the application
-
-    ```
-    npm start
-    ```
-
-1. View the application in a browser at `localhost:3000`
-
-## Deploying to IBM Cloud as a Cloud Foundry Application
-
-1. Login to IBM Cloud with the [IBM Cloud CLI](https://console.bluemix.net/docs/cli/index.html#overview)
-
-    ```
-    ibmcloud login
-    ```
-
-1. Target a Cloud Foundry organization and space.
-
-    ```
-    ibmcloud target --cf
-    ```
-
-1. Edit the *manifest.yml* file. Change the **name** field to something unique.  
-  For example, `- name: my-app-name`.
-1. Deploy the application
-
-    ```
-    ibmcloud app push
-    ```
-
-1. View the application online at the app URL.  
-For example: https://my-app-name.mybluemix.net
+![](doc/source/images/WatsonCred1.png)
 
 
-## License
+```
+WORKSPACE_ID=<put workspace id here>
 
-This sample code is licensed under Apache 2.0.  
-Full license text is available in [LICENSE](LICENSE).
+# Watson Assistant authentication using username/password authentication
+CONVERSATION_USERNAME=<put assistant username here>
+CONVERSATION_PASSWORD=<put assistant password here>
 
-## Contributing
+# Watson Assistant Authentication using IAM
+#CONVERSATION_IAM_APIKEY=<put assistant IAM apikey here>
+#CONVERSATION_URL=<put assistant url here>
+```
 
-See [CONTRIBUTING](CONTRIBUTING.md).
+* If the service credentials from IBM Watson Assistant is IAM based as below, populate the IAM apikey, url, and workspace_id and comment out the username/password part
 
-## Open Source @ IBM
-
-Find more open source projects on the
-[IBM Github Page](http://ibm.github.io/).
+![](https://github.com/IBM/pattern-images/raw/master/watson-assistant/watson_assistant_api_key.png)
 
 
-[demo_url]: http://conversation-simple.ng.bluemix.net/
-[doc_intents]: (https://console.bluemix.net/docs/services/conversation/intents-entities.html#planning-your-entities)
-[docs]: https://console.bluemix.net/docs/services/conversation/index.html
-[docs_landing]: (https://console.bluemix.net/docs/services/conversation/index.html)
-[node_link]: (http://nodejs.org/)
-[npm_link]: (https://www.npmjs.com/)
-[sign_up]: bluemix.net/registration
+```
+WORKSPACE_ID=<put workspace id here>
+
+# Watson Assistant authentication using username/password authentication
+#CONVERSATION_USERNAME=<put assistant username here>
+#CONVERSATION_PASSWORD=<put assistant password here>
+
+# Watson Assistant Authentication using IAM
+CONVERSATION_IAM_APIKEY=<put assistant IAM apikey here>
+CONVERSATION_URL=<put assistant url here>
+```
+
+You can find the credentials and workspace information from the deploy tab in the tooling. 
+
+<p align="center">
+  <img width="50%" height="50%" src="doc/source/images/WA_Deploy_Credentials.png">
+</p>
+
+
+### 5. Run the application
+
+From a terminal, in the directory where you cloned the GIT repository, run the following commands:
+
+```
+$ npm install
+$ npm start
+```
+
+# Troubleshooting
+
+* Deploy using Cloud Foundry `cf push` gives:
+
+``FAILED
+Could not find service <Watson_service> to bind to <IBM_Cloud_application>``
+
+If you name your service `wcsi-conversation-service`, this should work.
+When you use `cf push`, it is trying to bind to the services listed in the `manifest.yml`.
+
+So, there are 2 ways you can get this to work:
+
+* Change the names of your IBM Cloud services to match the names in the manifest.
+* Change the names in the manifest to match the names of your IBM Cloud services.
+
+
+
+# License
+
+[Apache 2.0](LICENSE)
+
+# Links
+
+* [IBM Watson Assistant Docs](https://console.bluemix.net/docs/services/conversation/dialog-build.html#dialog-build)
+* [Blog for IBM Watson Assistant Slots Code Pattern](https://developer.ibm.com/code/2017/09/19/managing-resources-efficiently-watson-conversation-slots/)
+
+# Learn more
+
+* **Artificial Intelligence Code Patterns**: Enjoyed this Code Pattern? Check out our other [AI Code Patterns](https://developer.ibm.com/code/technologies/artificial-intelligence/).
+* **AI and Data Code Pattern Playlist**: Bookmark our [playlist](https://www.youtube.com/playlist?list=PLzUbsvIyrNfknNewObx5N7uGZ5FKH0Fde) with all of our Code Pattern videos
+* **With Watson**: Want to take your Watson app to the next level? Looking to utilize Watson Brand assets? [Join the With Watson program](https://www.ibm.com/watson/with-watson/) to leverage exclusive brand, marketing, and tech resources to amplify and accelerate your Watson embedded commercial solution.
+* **Kubernetes on IBM Cloud**: Deliver your apps with the combined the power of [Kubernetes and Docker on IBM Cloud](https://www.ibm.com/cloud-computing/bluemix/containers)
