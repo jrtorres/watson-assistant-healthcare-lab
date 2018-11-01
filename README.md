@@ -28,12 +28,12 @@ This application is based on the code pattern published here - [Slot Code Patter
 
 ### Part 1: Create the basic structure
 
-Complete the steps in [Build the bot from scratch](PART1_BUILDBOT.md) to build the basic chatbot.
+Complete the steps in [Build the bot from scratch](PART1_BUILDBOT.md) to build the basic chatbot.  
 Once you're done, go ahead and test the chatbot using the [simple client application](#run-the-application).
 
 ### Part 2: Extend the bot
 
-Now we will extend the chatbot with a couple of external service calls. Complete the steps in [Extend the bot](PART2_EXTENDBOT.md).
+Now we will extend the chatbot with a couple of external service calls. Complete the steps in [Extend the bot](PART2_EXTENDBOT.md).  
 Once you're done, go ahead and test the chatbot using the [simple client application](#run-the-application).
 
 ## Run the Application
@@ -71,7 +71,7 @@ Find the desired local version of the workspace JSON file [Part 1 Workspace](tra
    * If your service instance uses an IAM API key, copy the `apikey` and `url` to the relevant fields.
 
     ```
-    ASSISTANT_IAM_APIKEY=ca2905e6-7b5d-4408-9192-e4d54d83e604
+    ASSISTANT_IAM_APIKEY=caXXXXXXXXXXXXXXXXX
     ASSISTANT_IAM_URL=https://gateway-syd.watsonplatform.net/assistant/api
     ```
 
