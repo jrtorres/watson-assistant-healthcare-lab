@@ -139,3 +139,9 @@ Now lets extend our dialog to cover an additional scenario around claims. We wil
 17. Now you can test the chatbot via the 'Try it out' panel.
    ![Test Claims](doc/source/images/WA_TestClaims.png)
 
+18. Feel free to test the chatbot via the client application as described in the [README](README.md)
+
+19. ***{Optional]*** As an additional exercise, you can also experiment with adding an entity in Watson Assistant to capture the ICD10 code. Watson Assistant allows users to define a regular expression to capture entity values. You can use that to determine if an end user provided an ICD-10 code and bypass the classification steps. Here is a sample of what an ICD10 entity value might look like:
+   ![Entity Regex](doc/source/images/WA_Entity_ICD10.png)
+
+20. **When complete with the lab exercise, do not forget to remove your API key from the Welcome node.**
