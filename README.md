@@ -28,13 +28,13 @@ This application is based on the code pattern published here - [Slot Code Patter
 
 ### Part 1: Create the basic structure
 
-Complete the steps in [Build the bot from scratch](PART1_BUILDBOT.md) to build the basic chatbot.  
-Once you're done, go ahead and test the chatbot using the [simple client application](#run-the-application).
+* Complete the steps in [Build the bot from scratch](PART1_BUILDBOT.md) to build the basic chatbot.
+* Once you're done, go ahead and test the chatbot using the [simple client application](#run-the-application).
 
 ### Part 2: Extend the bot
 
-Now we will extend the chatbot with a couple of external service calls. Complete the steps in [Extend the bot](PART2_EXTENDBOT.md).  
-Once you're done, go ahead and test the chatbot using the [simple client application](#run-the-application).
+* Complete the steps in [Extend the bot](PART2_EXTENDBOT.md) to extend your chatbots capabilities.
+* Once you're done, go ahead and test the chatbot using the [simple client application](#run-the-application).
 
 ## Run the Application
 
@@ -46,7 +46,7 @@ Complete the steps outlined [above](#building-the-bot) to build the chatbot from
 
 Find the desired local version of the workspace JSON file [Part 1 Workspace](training/plan-bot-part1.json) or [Part 2 Workspace](training/plan-bot-part1.json) and select `Import` (make sure you import everything).
 
-#### 1. Add IBM Cloud service credentials and Workspace ID to .env file
+#### Add IBM Cloud service credentials and Workspace ID to .env file
 
 1. As you create the IBM Cloud services, you'll need to use the service credentials to interact with these services. You might get either IAM or username/password based credentials based on the region. To find these credentials, from the IBM cloud console, click on the Watson Assistant service instance you created and click on **Service credentials**
 
@@ -85,7 +85,7 @@ Find the desired local version of the workspace JSON file [Part 1 Workspace](tra
     WORKSPACE_ID=522XXXXXXXXXXXXXXXXXX
     ```
 
-#### 2. Start the application
+#### Start the application
 
 From a terminal, in the directory where you cloned the GIT repository, run the following commands:
 
@@ -103,40 +103,16 @@ From a terminal, in the directory where you cloned the GIT repository, run the f
 
 3. View the application in a browser at `localhost:3000`
 
-### Deploying to IBM Cloud as a Cloud Foundry Application
+### Running on IBM Cloud
+You could also deploy the application to to IBM Cloud as a Cloud Foundry Application
 
-1. Login to IBM Cloud with the [IBM Cloud CLI](https://console.bluemix.net/docs/cli/index.html#overview)
+1. Login to IBM Cloud with the [IBM Cloud CLI](https://console.bluemix.net/docs/cli/index.html#overview): `ibmcloud login`
+2. Target a Cloud Foundry organization and space: `ibmcloud target --cf`
+3. Edit the *manifest.yml* file. Change the **name** field to something unique. For example, `- name: my-app-name`.
+4. Deploy the application using `ibmcloud app push`
+5. View the application online at the app URL (found on your IBM Cloud console). 
 
-    ```
-    ibmcloud login
-    ```
-
-2. Target a Cloud Foundry organization and space.
-
-    ```
-    ibmcloud target --cf
-    ```
-
-3. Edit the *manifest.yml* file. Change the **name** field to something unique.  
-  For example, `- name: my-app-name`.
-
-4. Deploy the application
-
-    ```
-    ibmcloud app push
-    ```
-
-5. View the application online at the app URL. For example: `https://my-app-name.mybluemix.net`
-
-# Troubleshooting
-
-* Deploy using Cloud Foundry `cf push` gives:
-
-``FAILED
-Could not find service <Watson_service> to bind to <IBM_Cloud_application>``
-
-So, there are 2 ways you can get this to work:
-
+If the deployment fails, due to a service name not found issue, you could
 * Change the names of your IBM Cloud services to match the names in the manifest.
 * Change the names in the manifest to match the names of your IBM Cloud services.
 
