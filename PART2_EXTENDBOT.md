@@ -11,16 +11,16 @@ First we will create a cloud function that will call the Natural Language Classi
 02. Select the **Compute** category on the left, under 'All Categories'.
 
 03. Select the **Functions** service tile under Serverless Compute.
-   ![Functions Service](doc/source/images/Functions_Tile.png)  
+   ![Functions Service](doc/source/images/Functions_Tile.png)
 
 04. Click on **Actions** link on the left panel and then the **Create** button.
-   ![Create Action](doc/source/images/Functions_CreateAction.png)  
+   ![Create Action](doc/source/images/Functions_CreateAction.png)
 
 05. Select the **Create Action** option
-   ![Select Action Type](doc/source/images/Functions_SelectAction.png)
+   ![Select Action Type](doc/source/images/Function_SelectAction.png)
 
 06. Give your action a Name (i.e `watson_nlc`) and select a Node.js 8 runtime. Then click the **Create** button.
-   ![Create Action Type](doc/source/images/Functions_CreateAction_Vars.png)
+   ![Create Action Type](doc/source/images/Function_CreateAction_Vars.png)
 
 07. Paste the node.js code to call the NLC service ( copy it from [nlc_classify_function.js](functions/nlc_classify_function.js)) and click the **Save** button.
    ![Functions Code](doc/source/images/Function_Code.png)
@@ -34,6 +34,7 @@ First we will create a cloud function that will call the Natural Language Classi
 
 10. Go ahead and clear the sample input you entered in the step above.  
 
+\
 We now need to gather some details for our cloud function that we will use later in the Watson Assistant (save these details for the next section)
 01. Click on the **Endpoint** option on the left panel. The action name that needs to be saved is at the end of the url:
    ![Functions Endpoint](doc/source/images/Function_Endpoint.png)
@@ -42,6 +43,8 @@ We now need to gather some details for our cloud function that we will use later
 
 03. Click on the eye icon on the right hand side to show your cloud functions API key. Copy and save this value for later
    ![Functions API Key](doc/source/images/Functions_APIKey.png)
+
+\
 
 ## Step 2: Extend the chatbot
 
@@ -57,7 +60,7 @@ Now lets extend our dialog to cover an additional scenario around claims. We wil
 04. Name the intent *Initiate_Claim* and click **Create intent**
    ![Create Intent](doc/source/images/WA_CreateIntent_2.png)
 
-05. Add the example utterances shown in the screenshot below, clicking on **Add example** after entering each one. 
+05. Add the example utterances shown in the screenshot below, clicking on **Add example** after entering each one
    ![Intent Examples](doc/source/images/WA_CreateIntent_2_Examples.png)
 
 06. Click on the return icon to go back to the main menu screen
