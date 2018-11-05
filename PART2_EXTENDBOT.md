@@ -116,7 +116,7 @@ Now lets extend our dialog to cover an additional scenario around claims. We wil
    ```JSON
    {
       "context": {
-         "claim_service_topicd10code": "<? context.full_nlc_output.classes.get(0).class_name ?>"
+         "claim_service_topicd10code": "<? context.watson_nlc_output.classes.get(0).class_name ?>"
       },
       "output": {
          "generic": [{
@@ -138,7 +138,7 @@ Now lets extend our dialog to cover an additional scenario around claims. We wil
 
 1. Before we can test our claim process and classification, we need to provide the API Key to be able to call the Cloud Functions. In a real application, the credentials or key would be passed to Watson Assistant from the client application. For the purposes of this lab, we can put the API key directly in the dialog. We will add the key to the 'Welcome' Node so that it is set up in our context any time a conversation is started with this workspace. Select the 'Welcome' node in the dialog tree.
 
-1. Click the three horiztonal dots next to 'Then respond with:" header and click on **Open context editor**
+1. Click the three vertical dots next to 'Then respond with:" header and click on **Open context editor**
 
 1. Add a variable name `private` with a value of `{"my_credentials":{"api_key":"REPLACE_WITH_YOUR_API_KEY"}}`. Make sure you actually replace the value 'REPLACE_WITH_YOUR_API_KEY' with your actual api key, saved from section 1 above.  
    ![Welcome Node](doc/source/images/WA_WelcomeNodeWithKey.png)
