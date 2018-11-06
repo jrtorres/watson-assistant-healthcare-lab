@@ -28,14 +28,20 @@ First we will create a cloud function that will call the Natural Language Classi
 1. You now need to add parameters to your action which incude the credentials to access the NLC service as well as the specific classifier id to invoke. Click on the **Parameters** option from the left panel. Then add parameters as shown below. Be sure to click the **Add** button to add each parameter and ensure you enclose all parameter values in quotes. Make sure to click the **Save** button when you have added the parameters.  
    ![Functions Parameters](doc/source/images/Function_Parameters.png)
 
-1. You can now test your NLC cloud function. Go back to the Code page by clicking on the **Code** link on the left panel. Click on the **Change input** button to supply a sample piece of text to classify and then click on the **Apply** button. You can then click on the **Invoke** button and see results pop up on the right **Activations** panel.  
+1. You can now test your NLC cloud function. Go back to the Code page by clicking on the **Code** link on the left panel. Click on the **Change input** button to supply a sentence to classify for a symptom and then click on the **Apply** button. You can then click on the **Invoke** button and see results pop up on the right **Activations** panel.  
+
+   ```JSON
+   {"text":"The patient experienced a spontaneous pneumothorax"}
+   ```
+
    ![Functions Test Input](doc/source/images/Function_TestInput.png)  
    ![Functions Test Results](doc/source/images/Function_CallResults.png)
 
 1. Go ahead and clear the sample input you entered in the step above.  
 
-\
+
 We now need to gather some details for our cloud function that we will use later in the Watson Assistant (save these details for the next section)  
+
 1. Click on the **Endpoint** option on the left panel. The action name that needs to be saved is at the end of the url:  
    ![Functions Endpoint](doc/source/images/Function_Endpoint.png)
 
@@ -46,9 +52,9 @@ We now need to gather some details for our cloud function that we will use later
 
 ## Step 2: Extend the chatbot
 
-Now lets extend our dialog to cover an additional scenario around claims. We will assume that in order to intiate a claim, a user will supply the date of the service and a description of the service. We will use the description of the service to look up an appropriate ICD-10 code by invoking the cloud function and NLC classifier. 
+Now lets extend our dialog to cover an additional scenario around claims. We will assume that in order to intiate a claim, a user will supply the date of the service and a description of the service. We will use the description of the service to look up an appropriate ICD-10 code by invoking the cloud function and NLC classifier.
 
-1. Go to your IBM Cloud console and select your Watson Assistant Service (complete Part1 of the lab or import the Part1 workspace file if necessary). 
+1. Go to your IBM Cloud console and select your Watson Assistant Service (complete Part1 of the lab or import the Part1 workspace file if necessary).
 
 1. Click on the  **Launch tool** button to launch into the Watson Assistant tooling.  
    ![Launch](doc/source/images/WA_LaunchTool.png)
@@ -66,7 +72,7 @@ Now lets extend our dialog to cover an additional scenario around claims. We wil
 1. Next, lets add the dialog nodes. Click on the **Dialog** tab in the top menu bar. Select the Welcome node and click **Add node**. In the dialog node editor, enter a node name (i.e 'Start Claim'). For the input triggers, have it set to when the intents **#Initiate_Claim** is identified. In the response, add a text response as shown below.  
    ![Dialog Node 1](doc/source/images/WA_Dialog_Node6.png)
 
-1. There are two pieces of information we will gather for this scenario. We will need the date of the service the description of the service. Although, we could capture this all with a single node using the Slots capability, we are going to use child nodes. Select the 'Start Claim' node you created above and then click the **Add child node** button.  In the dialog node editor, enter a node name (i.e. 'Service Date'). For the input triggers, have it set to the entity type **@sys-date**. In the response, add a text response as shown below. Finally, we also want to store this date in the context, so click on the three dots next to the 'Then respond with' header and select 'Open context editor'. Save the date as shown below  
+1. There are two pieces of information we will gather for this scenario. We will need the date of the service and the description of the service. Although, we could capture this all with a single node using the Slots capability, we are going to use child nodes. Select the 'Start Claim' node you created above and then click the **Add child node** button.  In the dialog node editor, enter a node name (i.e. 'Service Date'). For the input triggers, have it set to the entity type **@sys-date**. In the response, add a text response as shown below. Finally, we also want to store this date in the context, so click on the three dots next to the 'Then respond with' header and select 'Open context editor'. Save the date as shown below  
    ![Dialog Node 2](doc/source/images/WA_Dialog_Node7.png)  
 
    Go ahead and also add another child node at this level. Select the 'Start Claim' node you created above and then click the **Add child node** button.  In the dialog node editor, enter a node name 'Re-prompt Claim Date'. For the input triggers, have it set to `true`. In the response, add a text response as shown below. Then in the 'And finally' section, select the **Jump to** option and select the 'Service Date' node with the option **Wait for user input**. Your dialog should look as shown below.  
@@ -110,7 +116,7 @@ Now lets extend our dialog to cover an additional scenario around claims. We wil
    ```JSON
    {
       "context": {
-         "claim_service_topicd10code": "<? context.full_nlc_output.classes.get(0).class_name ?>"
+         "claim_service_topicd10code": "<? context.watson_nlc_output.classes.get(0).class_name ?>"
       },
       "output": {
          "generic": [{
@@ -124,7 +130,7 @@ Now lets extend our dialog to cover an additional scenario around claims. We wil
    }
    ```
 
-1. To link the classification call and response processing nodes together. Select the 'Classify Description' node and click the three vertical dots on the node. Select the **Jump to** option and the subsequent **If bot recognizes (condition)** option.  
+1. To link the classification call and response processing nodes together. Select the 'Classify Description' node and click the three vertical dots on the node. Select the **Jump to** option and the subsequent **If assistant recognizes (condition)** option.  
    ![Dialog Node 5](doc/source/images/WA_Dialog_Node10_Jumpto.png)
 
 1. The completed dialog section should look as follows:  
@@ -132,7 +138,7 @@ Now lets extend our dialog to cover an additional scenario around claims. We wil
 
 1. Before we can test our claim process and classification, we need to provide the API Key to be able to call the Cloud Functions. In a real application, the credentials or key would be passed to Watson Assistant from the client application. For the purposes of this lab, we can put the API key directly in the dialog. We will add the key to the 'Welcome' Node so that it is set up in our context any time a conversation is started with this workspace. Select the 'Welcome' node in the dialog tree.
 
-1. Click the three horiztonal dots next to 'Then respond with:" header and click on **Open context editor**
+1. Click the three vertical dots next to 'Then respond with:" header and click on **Open context editor**
 
 1. Add a variable name `private` with a value of `{"my_credentials":{"api_key":"REPLACE_WITH_YOUR_API_KEY"}}`. Make sure you actually replace the value 'REPLACE_WITH_YOUR_API_KEY' with your actual api key, saved from section 1 above.  
    ![Welcome Node](doc/source/images/WA_WelcomeNodeWithKey.png)
@@ -142,7 +148,7 @@ Now lets extend our dialog to cover an additional scenario around claims. We wil
 
 1. Feel free to test the chatbot via the client application as described in the [README](README.md)  
 
-1. ***{Optional]*** As an additional exercise, you can also experiment with adding an entity in Watson Assistant to capture the ICD10 code. Watson Assistant allows users to define a regular expression to capture entity values. You can use that to determine if an end user provided an ICD-10 code and bypass the classification steps. Here is a sample of what an ICD10 entity value might look like:  
+1. ***[Optional]*** As an additional exercise, you can also experiment with adding an entity in Watson Assistant to capture the ICD10 code. Watson Assistant allows users to define a regular expression to capture entity values. You can use that to determine if an end user provided an ICD-10 code and bypass the classification steps. Here is a sample of what an ICD10 entity value might look like:  
    ![Entity Regex](doc/source/images/WA_Entity_ICD10.png)
 
 1. **WHEN COMPLETE WITH THIS LAB EXERCISE, REMEMBER TO REMOVE YOUR FUNCTIONS API KEY FROM THE WELCOME NODE.**

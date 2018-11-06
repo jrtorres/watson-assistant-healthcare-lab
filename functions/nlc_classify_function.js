@@ -23,7 +23,7 @@ function main(params) {
     let natural_language_classifier;
 
     natural_language_classifier = new NaturalLanguageClassifierV1({
-      //iam_apikey: params.iam_apikey,
+      iam_apikey: params.iam_apikey,
       username: params.username,
       password: params.password,
       url: params.url
@@ -33,7 +33,7 @@ function main(params) {
       text: params.text,
       classifier_id: params.classifier_id
     };
-    
+
     natural_language_classifier.classify(nlc_request, function (error, nlc_results) {
       if (error) {
         return reject(error);
