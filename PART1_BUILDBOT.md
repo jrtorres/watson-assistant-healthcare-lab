@@ -120,6 +120,14 @@ Now that we have designed the first dialogue between the chatbot and the user, w
     ![Dialog Node 3 MR](doc/source/images/WA_Dialog_Node3_MR.png)  
     ![Dialog Node 3 Responses](doc/source/images/WA_Dialog_Node3_Responses.png)
 
+    Here are some sample responses you can use in your nodes for each of the plans:
+
+    | Plan Type  | Response |  
+    | ------- | ------- |  
+    | CDHP | Consumer-driven health plan (CDHP) is a high-deductible plan that also includes a tax-free health savings account (HSA), health incentive account (HIA) or health reimbursement account (HRA). You may put tax-free money into your account, or your employer might put money in - sometimes as a reward for steps you’ve taken for better health, depending on your plan. Then you use that money for your share of care costs, like your deductible or coinsurance. |  
+    | HSA | Health Savings Account (HSA) plan is a high-dedutible plan that also includes a tax-free HSA. You can put tax-free money into it. Then use that money for your share of care costs, like your deductible or coinsurance. You can see all of the types of costs you can cover with money in your HSA. But remember that only cost your plan covers will go toward paying down your deductible.  |  
+    | HIA|  A health incentive account (HIA) is a health account set up by your employer health plan. You earn dollars in your account when you take certain steps to improve your health. You use that money to pay for your share of care costs, like your deductible or coinsurance. If you don’t use all the money, it stays in there next year as long as you’re still at the same job. |  
+
 1.  Select the 'Plan Information' node, then click the **Add child node** button.  In the dialog node editor, enter a node name (i.e. 'Prompt for Plan'). For the input triggers, set it to **true** . Add the responses as shown in the screen shot and in the 'And finally' section, set the action to **Jump to**, selecting the 'Current Plan Response' node and the 'Wait for user input' option  
     ![Dialog Node 4](doc/source/images/WA_Dialog_Node4.png)
 
